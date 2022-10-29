@@ -87,9 +87,9 @@ async def private_receive_handler(c: Client, m: Message):
 
         msg_text ="""
         {
-            "filename":{},
-            "filesize":{},
-            "url":{}
+            \"filename\":{},
+            \"filesize\":{},
+            \"url\":{}
         }
 
         """
