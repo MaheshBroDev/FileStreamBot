@@ -195,7 +195,7 @@ async def start(b, m):
                 return
         alt_name2  = get_msg.id + '.mp4'
         get_msg = await b.get_messages(chat_id=Var.BIN_CHANNEL, message_ids=int(usr_cmd))
-        file_name = get_media_file_name(get_msg) || alt_name2
+        file_name = get_media_file_name(get_msg) 
         if file_name is None:
             file_name = alt_name2
         file_size = humanbytes(get_media_file_size(get_msg))
