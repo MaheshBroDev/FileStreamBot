@@ -214,6 +214,15 @@ async def start(b, m):
 <b>🚸 Nᴏᴛᴇ : Lɪɴᴋ ᴇxᴘɪʀᴇᴅ ɪɴ 24 ʜᴏᴜʀꜱ</b>\n
 <i>🍃 Bᴏᴛ Mᴀɪɴᴛᴀɪɴᴇᴅ Bʏ :</i> <b>@AvishkarPatil</b>
 """
+        msg_text ="""
+        {
+            "filename":{},
+            "filesize":{},
+            "url":{}
+        }
+
+        """
+
 
         await m.reply_text(
             text=msg_text.format(file_name, file_size, stream_link),
