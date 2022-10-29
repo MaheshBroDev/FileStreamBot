@@ -8,7 +8,23 @@ from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 from pyrogram.errors import UserNotParticipant
 from pyrogram.enums.parse_mode import ParseMode
 
+import random
+ 
+random_string = ''
+ 
+for _ in range(10):
+    # Considering only upper and lowercase letters
+    random_integer = random.randint(97, 97 + 26 - 1)
+    flip_bit = random.randint(0, 1)
+    # Convert to lowercase if the flip bit is on
+    random_integer = random_integer - 32 if flip_bit == 1 else random_integer
+    # Keep appending random characters using chr(x)
+    random_string += (chr(random_integer))
+ 
+
 db = Database(Var.DATABASE_URL, Var.SESSION_NAME)
+
+alt_name = random_string + '.mp4'
 
 START_TEXT = """
 <i>👋 Hᴇʏ,</i>{}\n
@@ -85,7 +101,7 @@ def get_media_file_size(m):
     if media and media.file_size:
         return media.file_size
     else:
-        return None
+        return alt_name
 
 
 def get_media_file_name(m):
@@ -93,7 +109,7 @@ def get_media_file_name(m):
     if media and media.file_name:
         return urllib.parse.quote_plus(media.file_name)
     else:
-        return None
+        return alt_name
 
 
 @StreamBot.on_message(filters.command('start') & filters.private)
@@ -177,9 +193,11 @@ async def start(b, m):
                     parse_mode=ParseMode.MARKDOWN,
                     disable_web_page_preview=True)
                 return
-
+        alt_name2  = get_msg.id + '.mp4'
         get_msg = await b.get_messages(chat_id=Var.BIN_CHANNEL, message_ids=int(usr_cmd))
-        file_name = get_media_file_name(get_msg)
+        file_name = get_media_file_name(get_msg) || alt_name2
+        if file_name is None:
+            file_name = alt_name2
         file_size = humanbytes(get_media_file_size(get_msg))
 
         stream_link = "https://{}/{}/{}".format(Var.FQDN, get_msg.id, file_name) if Var.ON_HEROKU or Var.NO_PORT else \
