@@ -49,6 +49,7 @@ async def stream_handler(request):
 async def media_streamer(request, message_id: int,channel_id =None):
     range_header = request.headers.get('Range', 0)
     if channel_id is not None:    
+        channel_id = str(channel_id)
         channel_id = int(channel_id.replace('min', '-'))
     if channel_id is None:
         channel_id = Var.BIN_CHANNEL
