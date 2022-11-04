@@ -16,10 +16,23 @@ routes = web.RouteTableDef()
 async def root_route_handler(request):
     bot_details = await StreamBot.get_me()
     return web.json_response({"status": "running",
-                              "maintained_by": "Avishkar_Patil",
+                              "initiated by": "Avishkar_Patil",
+                              "maintained_by": "Mbro",
                               "server_permission": "Open",
                               "Telegram_Bot": '@'+bot_details.username})
 
+
+@routes.get("/{channel_id}/{message_id}")
+@routes.get("/{channel_id}/{message_id}/")
+@routes.get(r"/{channel_id}/{message_id:\d+}/{name}")
+async def stream_handler_with_channels(request):
+    try:
+        message_id = int(request.match_info['message_id'])
+        channel_id = int(request.match_info['channel_id'])
+        return await media_streamer(request, message_id,channel_id)
+    except ValueError as e:
+        logging.error(e)
+        raise web.HTTPNotFound
 
 @routes.get("/{message_id}")
 @routes.get("/{message_id}/")
@@ -33,9 +46,11 @@ async def stream_handler(request):
         raise web.HTTPNotFound
 
 
-async def media_streamer(request, message_id: int):
+async def media_streamer(request, message_id: int,channel_id : int=None):
     range_header = request.headers.get('Range', 0)
-    media_msg = await StreamBot.get_messages(Var.BIN_CHANNEL, message_id)
+    if channel_id is None:
+        channel_id = Var.BIN_CHANNEL
+    media_msg = await StreamBot.get_messages(channel_id, message_id)
     file_properties = await TGCustomYield().generate_file_properties(media_msg)
     file_size = file_properties.file_size
 
