@@ -46,7 +46,7 @@ async def stream_handler(request):
         raise web.HTTPNotFound
 
 
-async def media_streamer(request, message_id: int,channel_id : int=None):
+async def media_streamer(request, message_id: int,channel_id =None):
     range_header = request.headers.get('Range', 0)
     if channel_id is None:
         channel_id = Var.BIN_CHANNEL
