@@ -40,7 +40,8 @@ async def stream_handler(request):
 async def stream_handler_with_channels(request):
     try:
         message_id = int(request.match_info['message_id'])
-        channel_id = int(request.match_info['channel_id'])
+        channel_id = request.match_info['channel_id']
+        channel_id = int(channel_id.replace("min",'-'))
         return await media_streamer(request, message_id,channel_id)
     except ValueError as e:
         logging.error(e)
@@ -48,10 +49,11 @@ async def stream_handler_with_channels(request):
 
 
 
-async def media_streamer(request, message_id: int,channel_id : int=None):
+async def media_streamer(request, message_id: int,channel_id =0):
     range_header = request.headers.get('Range', 0)
-    if channel_id is None:
+    if channel_id is None or channel_id == 0:
         channel_id = Var.BIN_CHANNEL
+    channel_id = int(channel_id)    
     media_msg = await StreamBot.get_messages(channel_id, message_id)
     file_properties = await TGCustomYield().generate_file_properties(media_msg)
     file_size = file_properties.file_size
