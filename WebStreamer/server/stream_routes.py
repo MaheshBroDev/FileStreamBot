@@ -57,7 +57,8 @@ async def media_streamer(request, message_id: int,channel_id =None):
     if channel_id is None:
         channel_id = Var.BIN_CHANNEL
     channel_id = str(channel_id)
-    print(channel_id)
+    print("channel_id " + str(channel_id))
+    print("message_id " + str(message_id))
     media_msg = await StreamBot.get_messages(channel_id, message_id)
     file_properties = await TGCustomYield().generate_file_properties(media_msg)
     file_size = file_properties.file_size
