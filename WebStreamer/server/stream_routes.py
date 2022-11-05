@@ -27,8 +27,9 @@ async def root_route_handler(request):
 @routes.get(r"/{channel_id}/{message_id:\d+}/{name}")
 async def stream_handler_with_channels(request):
     try:
-        if request.match_info['message_id'] is 'None' or request.match_info['message_id'] is 'None.mp4' :
-            return await media_streamer(request, message_id)
+        if request.match_info['message_id'] == 'None' or  request.match_info['message_id'] is None  or request.match_info['message_id'] == 'None.mp4' :
+            channel_id = int(request.match_info['channel_id'])
+            return await media_streamer(request, channel_id)
         message_id = int(request.match_info['message_id'])
         channel_id = int(request.match_info['channel_id'])
         return await media_streamer(request, message_id,channel_id)
