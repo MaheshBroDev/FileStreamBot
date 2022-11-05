@@ -56,7 +56,10 @@ async def media_streamer(request, message_id: int,channel_id =0):
     channel_id = int(channel_id)    
     print("channel id "+ str(channel_id))
     print("message id "+ str(message_id))
-    media_msg = await StreamBot.get_messages(channel_id, message_id)
+    try:    
+        media_msg = await StreamBot.get_messages(channel_id, message_id)
+    except:
+        raise web.HTTPNotFound
     file_properties = await TGCustomYield().generate_file_properties(media_msg)
     file_size = file_properties.file_size
 
