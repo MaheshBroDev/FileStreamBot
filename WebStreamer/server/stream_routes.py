@@ -23,7 +23,7 @@ async def root_route_handler(request):
 
 
 @routes.get("/{channel_id}/{message_id}")
-@routes.get("/{channel_id}/{message_id:}/")
+@routes.get("/{channel_id}/{message_id}/")
 @routes.get(r"/{channel_id}/{message_id:\d+}/{name}")
 async def stream_handler_with_channels(request):
     try:
