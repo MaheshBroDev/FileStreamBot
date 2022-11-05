@@ -22,9 +22,21 @@ async def root_route_handler(request):
                               "Telegram_Bot": '@'+bot_details.username})
 
 
-@routes.get("/{channel_id}/{message_id}")
-@routes.get("/{channel_id}/{message_id}/")
-@routes.get(r"/{channel_id}/{message_id:\d+}/{name}")
+@routes.get("/botlink/{message_id}")
+@routes.get("/botlink/{message_id}/")
+@routes.get(r"/botlink/{message_id:\d+}/{name}")
+async def stream_handler(request):
+    try:
+        message_id = int(request.match_info['message_id'])
+        return await media_streamer(request, message_id)
+    except ValueError as e:
+        logging.error(e)
+        raise web.HTTPNotFound
+
+
+@routes.get("/public/{channel_id}/{message_id}")
+@routes.get("/public/{channel_id}/{message_id}/")
+@routes.get(r"/public/{channel_id}/{message_id:\d+}/{name}")
 async def stream_handler_with_channels(request):
     try:
         message_id = int(request.match_info['message_id'])
@@ -34,16 +46,6 @@ async def stream_handler_with_channels(request):
         logging.error(e)
         raise web.HTTPNotFound
 
-@routes.get("/{message_id}")
-@routes.get("/{message_id}/")
-@routes.get(r"/{message_id:\d+}/{name}")
-async def stream_handler(request):
-    try:
-        message_id = int(request.match_info['message_id'])
-        return await media_streamer(request, message_id)
-    except ValueError as e:
-        logging.error(e)
-        raise web.HTTPNotFound
 
 
 async def media_streamer(request, message_id: int,channel_id : int=None):

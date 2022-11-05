@@ -200,7 +200,7 @@ async def start(b, m):
             file_name = alt_name2
         file_size = humanbytes(get_media_file_size(get_msg))
 
-        stream_link = "https://{}/{}/{}".format(Var.FQDN, get_msg.id, file_name) if Var.ON_HEROKU or Var.NO_PORT else \
+        stream_link = "https://{}/botlink/{}/{}".format(Var.FQDN, get_msg.id, file_name) if Var.ON_HEROKU or Var.NO_PORT else \
             "http://{}:{}/{}/{}".format(Var.FQDN,
                                      Var.PORT,
                                      get_msg.id,
@@ -216,7 +216,7 @@ async def start(b, m):
 """
         msg_text ="""
         {
-            "filename":{},
+            "filename":{}, 
             "filesize":{},
             "url":{}
         }
