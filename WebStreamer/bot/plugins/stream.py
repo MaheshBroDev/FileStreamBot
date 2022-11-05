@@ -28,6 +28,8 @@ def get_media_file_name(m):
     if media and media.file_name:
         return urllib.parse.quote_plus(media.file_name)
     elif media and media.file_unique_id:
+        if m.video:
+            return urllib.parse.quote_plus(media.file_unique_id + ".mp4")
         return urllib.parse.quote_plus(media.file_unique_id)
     else:
         return None
