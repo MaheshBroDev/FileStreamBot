@@ -21,6 +21,19 @@ async def root_route_handler(request):
                               "server_permission": "Open",
                               "Telegram_Bot": '@'+bot_details.username})
 
+
+@routes.get("/{channel_id}/{message_id}")
+@routes.get("/{channel_id}/{message_id}/")
+@routes.get(r"/{channel_id}/{message_id:\d+}/{name}")
+async def stream_handler_with_channels(request):
+    try:
+        message_id = int(request.match_info['message_id'])
+        channel_id = int(request.match_info['channel_id'])
+        return await media_streamer(request, message_id,channel_id)
+    except ValueError as e:
+        logging.error(e)
+        raise web.HTTPNotFound
+
 @routes.get("/{message_id}")
 @routes.get("/{message_id}/")
 @routes.get(r"/{message_id:\d+}/{name}")
@@ -33,32 +46,10 @@ async def stream_handler(request):
         raise web.HTTPNotFound
 
 
-
-@routes.get("/{channel_id}/{message_id}")
-@routes.get("/{channel_id}/{message_id}/")
-@routes.get(r"/{channel_id}/{message_id:\d+}/{name}")
-async def stream_handler_with_channels(request):
-    try:
-        if request.match_info['message_id'] == "None" or  request.match_info['message_id'] is None  or request.match_info['message_id'] == "None.mp4" :
-            channel_id = int(request.match_info['channel_id'])
-            return await media_streamer(request, channel_id)
-        message_id = int(request.match_info['message_id'])
-        channel_id = int(request.match_info['channel_id'])
-        return await media_streamer(request, message_id,channel_id)
-    except ValueError as e:
-        logging.error(e)
-        raise web.HTTPNotFound
-
-async def media_streamer(request, message_id: int,channel_id =None):
+async def media_streamer(request, message_id: int,channel_id : int=None):
     range_header = request.headers.get('Range', 0)
-    if channel_id is not None:    
-        channel_id = str(channel_id)
-        channel_id = int(channel_id.replace('min', '-'))
     if channel_id is None:
         channel_id = Var.BIN_CHANNEL
-    channel_id = str(channel_id)
-    print("channel_id " + str(channel_id))
-    print("message_id " + str(message_id))
     media_msg = await StreamBot.get_messages(channel_id, message_id)
     file_properties = await TGCustomYield().generate_file_properties(media_msg)
     file_size = file_properties.file_size
